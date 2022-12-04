@@ -1,4 +1,4 @@
-const EventEmitter = require('events').EventEmitter
+import {EventEmitter} from 'events';
 
 /**
  * Base Class to force interface to be implemented
@@ -100,4 +100,4 @@ function interfaceError (methodName) {
 	return `View interface error - subclasses must implement the ${methodName}() method`
 }
 
-module.exports = View
+export { View}

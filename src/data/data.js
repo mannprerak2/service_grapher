@@ -128,7 +128,4 @@ const links = [
 	// { source: 'recommendations-service', target: 'recommendations-db' },
 ]
 
-module.exports = {
-	nodes: nodes,
-	links: links
-}
+export {nodes, links}

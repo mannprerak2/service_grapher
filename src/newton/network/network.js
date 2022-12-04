@@ -1,4 +1,4 @@
-const EventEmitter = require('events').EventEmitter
+import {EventEmitter} from 'events';
 
 /**
  * Data Wrapper for Graphs, useful for dynamically calculating links between nodes.
@@ -447,4 +447,5 @@ function verifyLinkFormat (link) {
 		}
 	}
 }
-module.exports = Network
+
+export {Network}

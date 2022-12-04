@@ -1,5 +1,5 @@
-const d3 = require('d3')
-const View = require('./view')
+import * as d3 from 'd3'
+import {View} from './view'
 
 /**
  * @typedef {Object} Link
@@ -189,4 +189,4 @@ class Links extends View {
 	}
 }
 
-module.exports = Links
+export { Links}

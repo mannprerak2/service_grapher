@@ -1,12 +1,10 @@
-// const d3 = require('./../d3')
-const d3 = require('d3')
-const Cola = require('webcola')
+import * as d3 from 'd3';
+import * as Cola from 'webcola';
+import {EventEmitter} from 'events';
 
-const EventEmitter = require('events').EventEmitter
-
-const Labels = require('./views/labels')
-const Links = require('./views/links')
-const Nodes = require('./views/nodes')
+import {Labels} from './views/labels';
+import {Links} from './views/links';
+import {Nodes} from './views/nodes';
 
 const defaults = {
 	margin: 40,
@@ -314,4 +312,4 @@ class Graph extends EventEmitter {
 	}
 }
 
-module.exports = Graph
+export {Graph}
