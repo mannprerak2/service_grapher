@@ -17,8 +17,9 @@
     });
     graph.init();
 
-    graph.on("node:click", (n) =>
+    graph.on("node:click", (n) => {
       graph.highlightDependencies(n, { arrows: true })
+    }
     );
   });
 </script>
