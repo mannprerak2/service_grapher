@@ -1,0 +1,62 @@
+.node {
+	&:hover {
+		cursor: pointer;
+	}
+
+	fill: var(--green);
+	stroke: var(--green);
+	stroke-width: var(--node-stroke-width);
+
+	transform-origin: center center;
+	animation-iteration-count: infinite;
+
+	// --- Uptime Status ---
+
+	&.status-down {
+		fill: var(--red);
+		stroke: var(--red-lighter);
+		animation-timing-function: ease-in;
+		animation-duration: 1.1s;
+		animation-name: flashRed, shake;
+	}
+
+	&.status-deploying {
+		fill: var(--teal);
+		stroke: var(--teal-lighter);
+		animation-name: flashBlue;
+		animation-duration: 3s;
+		animation-timing-function: ease;
+	}
+
+	// --- Relationships ---
+
+	&[data-rel="is-source-and-target"] {
+		fill: var(--green);
+		stroke: var(--green-lighter);
+	}
+
+	&[data-rel="is-source"] {
+		fill: var(--red);
+		stroke: var(--red-lighter);
+	}
+
+	&[data-rel="is-deep-source"] {
+		fill: var(--orange);
+		stroke: var(--orange-lighter);
+	}
+
+	&[data-rel="is-target"] {
+		fill: var(--yellow);
+		stroke: var(--yellow-lighter);
+	}
+
+	&[data-rel="has-no-relationship"] {
+		fill: var(--navy);
+		stroke: var(--navy-lighter);
+	}
+
+	&[data-hidden="1"] {
+		fill: var(--graph-bg-color);
+		stroke: var(--graph-bg-color);
+	}
+}

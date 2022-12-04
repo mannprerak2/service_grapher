@@ -1,0 +1,10 @@
+@import "variables";
+@import "animations";
+@import "arrows";
+@import "nodes";
+@import "links";
+@import "labels";
+
+svg {
+	background: var(--navy-darker);
+}

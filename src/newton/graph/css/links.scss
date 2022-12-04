@@ -1,0 +1,24 @@
+.link {
+	stroke: var(--grey);
+	stroke-width: var(--link-stroke-width);
+
+	&[data-rel="is-source"] {
+		stroke: var(--yellow);
+	}
+
+	&[data-rel="is-deep-source"] {
+		stroke: var(--orange);
+	}
+
+	&[data-rel="is-target"] {
+		stroke: var(--red);
+	}
+
+	&[data-rel="has-no-relationship"] {
+		stroke: var(--navy-lighter);
+	}
+
+	&[data-hidden="1"] {
+		stroke: var(--graph-bg-color);
+	}
+}
