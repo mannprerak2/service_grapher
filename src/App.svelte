@@ -17,8 +17,18 @@
 
   let err;
 
-  function isValidData(data) {
-    if (data.hasOwnProperty("name") && data.hasOwnProperty("nodes") && data.hasOwnProperty("links") && data.hasOwnProperty("more")) {
+  function validateAndUpdateData(data) {
+    if (data.hasOwnProperty("name") && data.hasOwnProperty("nodes") && data.hasOwnProperty("links")) {
+      data.name = data.name || "Unnamed graph";
+      data.more = data.more || [];
+      data.nodes.array.forEach(element => {
+        element.id = (element.id || element.name).toLowerCase();
+        element.status = element.status || "up";
+      });
+      data.links.array.forEach(element => {
+        element.source = element.source.toLowerCase();
+        element.target = element.target.toLowerCase();
+      });
       return true;
     } else {
       throw "ERROR [Socket] - invalid data received. `name`, `nodes`, `links` and `more` properties are required.";
@@ -37,15 +47,14 @@
     if (dataServer) {
       try {
         let res = await fetch(dataServer);
-        isValidData(res);
+        validateAndUpdateData(res);
         data = res;
       }catch (e) {
         err = `Unable to fetch data from data-server: ${dataServer}. Error: ${e}`
       }
-      // TODO:
-      data = mockData;
     } else {
       data = mockData;
+      validateAndUpdateData(res);
     }
     // Load search engine.
     fuse = new Fuse(data.nodes, {
