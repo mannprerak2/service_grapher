@@ -3,9 +3,11 @@
   import { Network } from "./newton/network/network.js";
   import { Graph } from "./newton/graph/graph.js";
 
+  import Chip from "./lib/Chip.svelte";
   import * as data from "./data/data.js";
 
   let graph;
+  let selectedNode = null;
 
   onMount(async () => {
     let graphUI = window.document.getElementById("main-free-area")
@@ -15,13 +17,13 @@
       height: graphUI.clientHeight,
       margin: 0,
       flow: "horizontal",
-      // engine: 'd3',
       draggable: true,
       network: network,
     });
     graph.init();
 
     graph.on("node:click", (n) => {
+      selectedNode = n;
       graph.highlightDependencies(n, { arrows: true })
     }
     );
@@ -40,6 +42,25 @@
   </div>
 
   <div id="right-fixed-bar">
+    {#if selectedNode}
+      <div style="display: flex; flex-direction: column;">
+        <h1>{selectedNode.label}</h1>
+        <div style="display: flex; flex-wrap: wraap">
+          {#each selectedNode.tags || [] as tag}
+            <Chip content={tag}/>
+          {/each}
+        </div>
+        <hr style="width:35%;margin-left:0;background-color: var(--divider-color)">
+        {#each Object.entries(selectedNode.extra || {}) as [k, v]}
+        <h2 style="margin-bottom:1px">{k}</h2>
+        <div style="margin-bottom:10px">{v}</div>
+        {/each}
+      </div>
+    {:else}
+      <h3>
+        Select a node to view more details
+      </h3>
+    {/if}
   </div>
 </div>
 
@@ -54,10 +75,9 @@
 
   #right-fixed-bar {
     width: var(--right-bar-width);
-    height: 100vh;
+    height: 100%;
     display: table-cell;
     overflow: scroll;
-    height: 100%;
     border-left: 1px solid var(--divider-color);
     margin: 0 0;
     padding: 10px;
@@ -74,9 +94,9 @@
     width: 100%;
     height: var(--top-bar-height);
     padding: 10px;
-    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
-    box-sizing: border-box;         /* Opera/IE 8+ */
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
   }
 
   #main-free-area {
