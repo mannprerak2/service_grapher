@@ -6,7 +6,7 @@
 
   import Chip from "./lib/Chip.svelte";
   import GraphArea from "./lib/GraphArea.svelte";
-  import {mockData} from "./data/data.js";
+  import { mockData } from "./data/data.js";
 
   let graph;
   let selectedNode = null;
@@ -15,40 +15,73 @@
 
   let fuse;
 
-  function reset () {
+  let err;
+
+  function isValidData(data) {
+    if (data.hasOwnProperty("name") && data.hasOwnProperty("nodes") && data.hasOwnProperty("links") && data.hasOwnProperty("more")) {
+      return true;
+    } else {
+      throw "ERROR [Socket] - invalid data received. `name`, `nodes`, `links` and `more` properties are required.";
+    }
+  }
+  function reset() {
     if (!graph) return;
     selectedNode = null;
     graph.render();
   }
 
   onMount(async () => {
-    data = mockData;
-
+    let dataServer = new URLSearchParams(window.location.search).get(
+      "data-server"
+    );
+    if (dataServer) {
+      try {
+        let res = await fetch(dataServer);
+        isValidData(res);
+        data = res;
+      }catch (e) {
+        err = `Unable to fetch data from data-server: ${dataServer}. Error: ${e}`
+      }
+      // TODO:
+      data = mockData;
+    } else {
+      data = mockData;
+    }
     // Load search engine.
-    fuse = new Fuse(allNodes, {
+    fuse = new Fuse(data.nodes, {
       isCaseSensitive: true,
       keys: ["tags", "extra.key", "extra.value"],
     });
   });
 
-  function onSelectNode(n){
+  function onSelectNode(n) {
     selectedNode = n;
   }
 </script>
 
-{#if data}
+{#if err}
+  <div style="padding: 20px">{err}</div>
+{:else if data}
   <div class="container-table">
     <div id="left-free-area">
       <div
         id="top-bar"
-        style="display: flex; flex-direction: row; justify-content: space-between">
+        style="display: flex; flex-direction: row; justify-content: space-between"
+      >
         <h2>Service Grapher - {data.name}</h2>
-        <div style="display: flex; flex-direction: column; justify-content: center">
+        <div
+          style="display: flex; flex-direction: column; justify-content: center"
+        >
           <button id="reset-button" on:click={reset}>Reset</button>
         </div>
       </div>
       <div id="main-free-area">
-        <GraphArea {onSelectNode} nodes={data.nodes} links={data.links} bind:graph={graph}/>
+        <GraphArea
+          {onSelectNode}
+          nodes={data.nodes}
+          links={data.links}
+          bind:graph
+        />
       </div>
     </div>
 
@@ -75,6 +108,7 @@
     </div>
   </div>
 {/if}
+
 <style>
   .container-table {
     display: table;
