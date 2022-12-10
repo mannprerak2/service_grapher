@@ -118,4 +118,10 @@ const links = [
 	{ source: 'documents-service', target: 'oauth-service' },
 ]
 
-export {nodes, links}
+const mockData = {
+	name: "Demo",
+	more: [],
+	nodes: nodes,
+	links: links,
+}
+export {mockData}

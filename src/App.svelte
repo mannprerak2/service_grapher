@@ -6,15 +6,12 @@
 
   import Chip from "./lib/Chip.svelte";
   import GraphArea from "./lib/GraphArea.svelte";
-  import * as data from "./data/data.js";
+  import {mockData} from "./data/data.js";
 
   let graph;
   let selectedNode = null;
-  let allNodes;
-  let allLinks;
 
-  let curNodes;
-  let curLinks;
+  let data;
 
   let fuse;
 
@@ -25,13 +22,7 @@
   }
 
   onMount(async () => {
-    // Load data.
-    allNodes = data.nodes;
-    allLinks = data.links;
-
-    // Set Data for graph.
-    curNodes = allNodes;
-    curLinks = allLinks;
+    data = mockData;
 
     // Load search engine.
     fuse = new Fuse(allNodes, {
@@ -45,46 +36,45 @@
   }
 </script>
 
-<div class="container-table">
-  <div id="left-free-area">
-    <div
-      id="top-bar"
-      style="display: flex; flex-direction: row; justify-content: space-between">
-      <h2>Service Grapher</h2>
-      <div style="display: flex; flex-direction: column; justify-content: center">
-        <button id="reset-button" on:click={reset}>Reset</button>
+{#if data}
+  <div class="container-table">
+    <div id="left-free-area">
+      <div
+        id="top-bar"
+        style="display: flex; flex-direction: row; justify-content: space-between">
+        <h2>Service Grapher - {data.name}</h2>
+        <div style="display: flex; flex-direction: column; justify-content: center">
+          <button id="reset-button" on:click={reset}>Reset</button>
+        </div>
+      </div>
+      <div id="main-free-area">
+        <GraphArea {onSelectNode} nodes={data.nodes} links={data.links} bind:graph={graph}/>
       </div>
     </div>
-    <div id="main-free-area">
-      {#if curNodes}
-        <GraphArea {onSelectNode} nodes={curNodes} links={curLinks} bind:graph={graph}/>
+
+    <div id="right-fixed-bar">
+      {#if selectedNode}
+        <div style="display: flex; flex-direction: column;">
+          <h1>{selectedNode.label}</h1>
+          <div style="display: flex; flex-wrap: wrap">
+            {#each selectedNode.tags || [] as tag}
+              <Chip content={tag} />
+            {/each}
+          </div>
+          <hr
+            style="width:35%;margin-left:0;background-color: var(--divider-color)"
+          />
+          {#each selectedNode.extra || [] as extra}
+            <h2 style="margin-bottom:1px">{extra.key}</h2>
+            <div style="margin-bottom:10px">{extra.value}</div>
+          {/each}
+        </div>
+      {:else}
+        <h3>Select a node to view more details</h3>
       {/if}
     </div>
   </div>
-
-  <div id="right-fixed-bar">
-    {#if selectedNode}
-      <div style="display: flex; flex-direction: column;">
-        <h1>{selectedNode.label}</h1>
-        <div style="display: flex; flex-wrap: wrap">
-          {#each selectedNode.tags || [] as tag}
-            <Chip content={tag} />
-          {/each}
-        </div>
-        <hr
-          style="width:35%;margin-left:0;background-color: var(--divider-color)"
-        />
-        {#each selectedNode.extra || [] as extra}
-          <h2 style="margin-bottom:1px">{extra.key}</h2>
-          <div style="margin-bottom:10px">{extra.value}</div>
-        {/each}
-      </div>
-    {:else}
-      <h3>Select a node to view more details</h3>
-    {/if}
-  </div>
-</div>
-
+{/if}
 <style>
   .container-table {
     display: table;
