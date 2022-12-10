@@ -3,16 +3,12 @@
 
   import { onMount } from "svelte";
   import Fuse from "fuse.js";
-  import { Network } from "./newton/network/network.js";
-  import { Graph } from "./newton/graph/graph.js";
 
   import Chip from "./lib/Chip.svelte";
-  import Search from "./lib/Search.svelte";
   import GraphArea from "./lib/GraphArea.svelte";
   import * as data from "./data/data.js";
 
   let graph;
-  let graphUI;
   let selectedNode = null;
   let allNodes;
   let allLinks;
@@ -22,12 +18,10 @@
 
   let fuse;
 
-  function onSearch(text) {
-    if (text) {
-      curNodes = fuse.search(text);
-    } else {
-      curNodes = allNodes;
-    }
+  function reset () {
+    if (!graph) return;
+    selectedNode = null;
+    graph.render();
   }
 
   onMount(async () => {
@@ -55,14 +49,15 @@
   <div id="left-free-area">
     <div
       id="top-bar"
-      style="display: flex; flex-direction: row; justify-content: space-between"
-    >
+      style="display: flex; flex-direction: row; justify-content: space-between">
       <h2>Service Grapher</h2>
-      <Search {onSearch} />
+      <div style="display: flex; flex-direction: column; justify-content: center">
+        <button id="reset-button" on:click={reset}>Reset</button>
+      </div>
     </div>
     <div id="main-free-area">
       {#if curNodes}
-        <GraphArea {onSelectNode} nodes={curNodes} links={curLinks}/>
+        <GraphArea {onSelectNode} nodes={curNodes} links={curLinks} bind:graph={graph}/>
       {/if}
     </div>
   </div>
@@ -71,7 +66,7 @@
     {#if selectedNode}
       <div style="display: flex; flex-direction: column;">
         <h1>{selectedNode.label}</h1>
-        <div style="display: flex; flex-wrap: wraap">
+        <div style="display: flex; flex-wrap: wrap">
           {#each selectedNode.tags || [] as tag}
             <Chip content={tag} />
           {/each}
@@ -128,5 +123,14 @@
   #main-free-area {
     width: 100%;
     height: calc(100vh - var(--top-bar-height));
+  }
+
+  #reset-button {
+    background-color: transparent;
+    height: 2em;
+    border: 1px solid var(--divider-color);
+    border-radius: 10px;
+    cursor: pointer;
+    color: var(--divider-color);
   }
 </style>

@@ -8,11 +8,12 @@
     export let links;
     export let onSelectNode;
 
-    let graph;
+    export let graph;
 
     onMount(async () => {
         let graphUI = window.document.getElementById("main-free-area");
         graph = new Graph({
+            container: '#my-graph',
             width: graphUI.clientWidth,
             height: graphUI.clientHeight,
             margin: 0,
@@ -33,7 +34,7 @@
     });
 </script>
 
-<svg id="main-free-area" class="graph-svg" />
+<svg class="graph-svg" id="my-graph" />
 
 <style>
 </style>

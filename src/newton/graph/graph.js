@@ -27,6 +27,7 @@ class Graph extends EventEmitter {
 	 * @param {Network} opts.network
 	 * @param {String} [opts.engine = 'cola'] - Force layout engine. Can be `d3` or `cola`.
 	 * @param {String} [opts.flow] - Display links in horizontal flow?
+	 * @param {String} [opts.container] - container for d3
 	 * @param {Boolean} [opts.draggable] - Make nodes draggable?
 	 */
 	constructor (opts = {}) {
@@ -38,23 +39,24 @@ class Graph extends EventEmitter {
 		this.width = (opts.width || defaults.width) - this.margin
 		this.engine = opts.engine || 'cola'
 		this.options = opts
+		this.container = opts.container || 'svg'
 
 		this._setNetwork(opts)
 
 		/**
 		 * @property {Labels} labels - reference to Labels used for UI interactions
 		 */
-		this.labels = new Labels()
+		this.labels = new Labels({container: this.container})
 
 		/**
 		 * @property {Links} links - reference to Links used for UI interactions
 		 */
-		this.links = new Links()
+		this.links = new Links({container: this.container})
 
 		/**
 		 * @property {Nodes} nodes - reference to Nodes used for UI interactions
 		 */
-		this.nodes = new Nodes()
+		this.nodes = new Nodes({container: this.container})
 
 
 		/**
@@ -113,7 +115,7 @@ class Graph extends EventEmitter {
 	// ------- FORCE ENGINES ------- //
 
 	_initLayout () {
-		this.svg = d3.select('svg')
+		this.svg = d3.select(this.container)
 			.attr('width', this.width)
 			.attr('height', this.height)
 
