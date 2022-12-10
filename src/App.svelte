@@ -1,44 +1,70 @@
 <script>
+  // @ts-nocheck
+
   import { onMount } from "svelte";
+  import Fuse from "fuse.js";
   import { Network } from "./newton/network/network.js";
   import { Graph } from "./newton/graph/graph.js";
 
   import Chip from "./lib/Chip.svelte";
+  import Search from "./lib/Search.svelte";
+  import GraphArea from "./lib/GraphArea.svelte";
   import * as data from "./data/data.js";
 
   let graph;
+  let graphUI;
   let selectedNode = null;
+  let allNodes;
+  let allLinks;
+
+  let curNodes;
+  let curLinks;
+
+  let fuse;
+
+  function onSearch(text) {
+    if (text) {
+      curNodes = fuse.search(text);
+    } else {
+      curNodes = allNodes;
+    }
+  }
 
   onMount(async () => {
-    let graphUI = window.document.getElementById("main-free-area")
-    const network = new Network(data.nodes, data.links);
-    graph = new Graph({
-      width: graphUI.clientWidth,
-      height: graphUI.clientHeight,
-      margin: 0,
-      flow: "horizontal",
-      draggable: true,
-      network: network,
-    });
-    graph.init();
+    // Load data.
+    allNodes = data.nodes;
+    allLinks = data.links;
 
-    graph.on("node:click", (n) => {
-      selectedNode = n;
-      graph.highlightDependencies(n, { arrows: true })
-    }
-    );
+    // Set Data for graph.
+    curNodes = allNodes;
+    curLinks = allLinks;
+
+    // Load search engine.
+    fuse = new Fuse(allNodes, {
+      isCaseSensitive: true,
+      keys: ["tags", "extra.key", "extra.value"],
+    });
   });
+
+  function onSelectNode(n){
+    selectedNode = n;
+  }
 </script>
 
-<!-- <main>
-  <svg class="graph-svg" width="50vw" />
-</main> -->
 <div class="container-table">
   <div id="left-free-area">
-    <div id="top-bar">
-        <h2>Service Grapher</h2>
+    <div
+      id="top-bar"
+      style="display: flex; flex-direction: row; justify-content: space-between"
+    >
+      <h2>Service Grapher</h2>
+      <Search {onSearch} />
     </div>
-    <svg id="main-free-area" class="graph-svg" />
+    <div id="main-free-area">
+      {#if curNodes}
+        <GraphArea {onSelectNode} nodes={curNodes} links={curLinks}/>
+      {/if}
+    </div>
   </div>
 
   <div id="right-fixed-bar">
@@ -47,19 +73,19 @@
         <h1>{selectedNode.label}</h1>
         <div style="display: flex; flex-wrap: wraap">
           {#each selectedNode.tags || [] as tag}
-            <Chip content={tag}/>
+            <Chip content={tag} />
           {/each}
         </div>
-        <hr style="width:35%;margin-left:0;background-color: var(--divider-color)">
-        {#each Object.entries(selectedNode.extra || {}) as [k, v]}
-        <h2 style="margin-bottom:1px">{k}</h2>
-        <div style="margin-bottom:10px">{v}</div>
+        <hr
+          style="width:35%;margin-left:0;background-color: var(--divider-color)"
+        />
+        {#each selectedNode.extra || [] as extra}
+          <h2 style="margin-bottom:1px">{extra.key}</h2>
+          <div style="margin-bottom:10px">{extra.value}</div>
         {/each}
       </div>
     {:else}
-      <h3>
-        Select a node to view more details
-      </h3>
+      <h3>Select a node to view more details</h3>
     {/if}
   </div>
 </div>
@@ -69,8 +95,8 @@
     display: table;
     margin: 0 0;
     -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
-    box-sizing: border-box;         /* Opera/IE 8+ */
+    -moz-box-sizing: border-box; /* Firefox, other Gecko */
+    box-sizing: border-box; /* Opera/IE 8+ */
   }
 
   #right-fixed-bar {

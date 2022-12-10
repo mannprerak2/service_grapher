@@ -1,8 +1,8 @@
 const nodes = [
-	{ status: "up", id:"web-frontend", label: "Web Frontend", extra: {"url": "some.frontend.com"}, tags: ["UI", "P0"] },
-	{ status: "up", id:"mobile-frontend", label: "Mobile Frontend", extra: {"My Store Name": "Some App Name",}, tags: ["UI", "P0"] },
+	{ status: "up", id:"web-frontend", label: "Web Frontend", extra: [{"key": "url", "value": "some.frontend.com"}], tags: ["UI", "P0"] },
+	{ status: "up", id:"mobile-frontend", label: "Mobile Frontend", extra: [{"key": "Store Name", "value": "My Store Name"}], tags: ["UI", "P0"] },
 
-	{ status: "up", id:"api-gateway", label: "API Gateway", extra: {"Auth Type": "JWT"}, tags: ["Proxy", "P0"] },
+	{ status: "up", id:"api-gateway", label: "API Gateway", extra: [{"key": "Auth Type", "value": "JWT"}], tags: ["Proxy", "P0"] },
 	{ status: "up", id:"search-service", label: "Search Service", tags: ["Third Party"] },
 	{ status: "up", id:"search-cache", label: "Search Cache" },
 
