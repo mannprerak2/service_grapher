@@ -30,6 +30,9 @@
   --label-text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
   --link-stroke-width: 1px;
   --node-stroke-width: 3px;
+  --divider-color: #777777;
+  --right-bar-width: 25vw;
+  --top-bar-height: 10vh
 }
 
 :root {
@@ -238,6 +241,7 @@ svg text {
   font-size: var(--label-font-size);
   text-anchor: middle;
   vertical-align: middle;
+  pointer-events:none;
 }
 
 .label.status-down {
@@ -279,3 +283,7 @@ svg {
   background: var(--navy-darker);
 }
 
+html {
+  background: var(--navy-darker);
+  color: var(--grey-lighter);
+}
