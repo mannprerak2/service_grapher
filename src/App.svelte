@@ -21,11 +21,11 @@
     if (data.hasOwnProperty("name") && data.hasOwnProperty("nodes") && data.hasOwnProperty("links")) {
       data.name = data.name || "Unnamed graph";
       data.more = data.more || [];
-      data.nodes.array.forEach(element => {
-        element.id = (element.id || element.name).toLowerCase();
+      data.nodes.forEach(element => {
+        element.id = (element.id || element.label).toLowerCase();
         element.status = element.status || "up";
       });
-      data.links.array.forEach(element => {
+      data.links.forEach(element => {
         element.source = element.source.toLowerCase();
         element.target = element.target.toLowerCase();
       });
@@ -46,7 +46,13 @@
     );
     if (dataServer) {
       try {
-        let res = await fetch(dataServer);
+        let res = await fetch(dataServer, {
+          method: 'GET',
+          headers: {
+            accept: 'application/json',
+          }
+        });
+        res = await res.json();
         validateAndUpdateData(res);
         data = res;
       }catch (e) {

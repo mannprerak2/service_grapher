@@ -27,6 +27,13 @@ export default {
 		env: Env,
 		ctx: ExecutionContext
 	): Promise<Response> {
-		return new Response(JSON.stringify(data));
+		const responseHeaders = {
+			'Access-Control-Allow-Origin': '*',
+			'Content-Type': 'application/json'
+		};
+		return new Response(JSON.stringify(data), {
+			headers: responseHeaders,
+            status: 200,
+		});
 	},
 };
